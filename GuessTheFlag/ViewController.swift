@@ -26,14 +26,14 @@ class ViewController: UIViewController {
         button1.layer.borderWidth = 1
         button2.layer.borderWidth = 1
         button3.layer.borderWidth = 1
-        
+               
         button1.layer.borderColor = UIColor.lightGray.cgColor
         button2.layer.borderColor = UIColor.lightGray.cgColor
         button3.layer.borderColor = UIColor.lightGray.cgColor
         
         askQuestion(action: nil)
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showScore))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "wallet.pass"), style: .plain, target: self, action: #selector(showScore))
         navigationItem.rightBarButtonItem?.tintColor = .black
     }
     
@@ -42,30 +42,33 @@ class ViewController: UIViewController {
         var message: String
    
         if sender.tag == correctAnswer {
-            title = "Correct"
-            message = "Your score is \(score)"
             score += 1
             questionCount += 1
+            title = "Correct"
+            message = "That’s the flag of \(countries[sender.tag].uppercased()). \nYour score: \(score)"
             
-            if questionCount == 10 {
-                title = "Final score"
-                message = "After 10 games, your score is \(score)"
-            }
         } else {
-            title = "Wrong"
-            message = "That’s the flag of \(countries[sender.tag].uppercased())"
             score -= 1
             questionCount += 1
+            title = "Wrong"
+            message = "That’s the flag of \(countries[sender.tag].uppercased()). \nYour score: \(score)"
             
-            if questionCount == 10 {
-                title = "Final score"
-                message = "After 10 games, your score is \(score)"
-            }
         }
         
-        let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
-        present(ac, animated: true)
+        if questionCount == 10 {
+            let ac = UIAlertController(title: "Congratulations", message: "Your final score: \(score)", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Start again", style: .default, handler: askQuestion))
+            present(ac, animated: true)
+            score = 0
+            questionCount = 0
+         
+            
+        } else {
+            let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+            present(ac, animated: true)
+
+        }
     }
         
     func askQuestion(action: UIAlertAction!) {
@@ -76,7 +79,7 @@ class ViewController: UIViewController {
         button2.setImage(UIImage(named: countries[1]), for: .normal)
         button3.setImage(UIImage(named: countries[2]), for: .normal)
         
-        title = "\(countries[correctAnswer].uppercased()) | Your score: \(score)"
+        title = "\(countries[correctAnswer].uppercased())"
     }
     
     @objc func showScore() {
